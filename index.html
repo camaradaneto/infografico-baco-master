@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rede Banco Master — Infográfico Interativo v6</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4f0;color:#111;padding:16px}
+h1{font-size:18px;font-weight:600;text-align:center;margin-bottom:4px}
+.sub{font-size:12px;color:#666;text-align:center;margin-bottom:12px}
+#w{position:relative;width:100%;touch-action:none}
+canvas{display:block;width:100%;cursor:default}
+.pop{display:none;position:absolute;z-index:200;line-height:1.6;border-radius:10px;
+  background:#ffffff;border:1.5px solid #888;color:#111}
+.pop:hover{display:block!important}
+#tt{width:290px;font-size:12px;padding:12px 14px 11px;pointer-events:auto}
+#tt .tn{font-size:13px;font-weight:700;margin-bottom:2px}
+#tt .tp{font-size:11px;color:#555;margin-bottom:6px;font-style:italic}
+#tt .td{font-size:12px;margin-bottom:8px;color:#1a1a1a}
+#tt .ts{font-size:11px;color:#666}
+#tt a{color:#1a5fb4;text-decoration:underline}
+#et{max-width:250px;font-size:11.5px;padding:9px 12px;pointer-events:none}
+#et .er{font-weight:700;font-size:12px;color:#1a4a80;margin-bottom:4px}
+#et .ed{color:#222}
+#leg{display:flex;gap:10px;flex-wrap:wrap;padding:8px 2px 4px;font-size:11px;color:#444;align-items:center;margin-top:4px}
+.li{display:flex;align-items:center;gap:4px}
+.ll{width:20px;height:3px;border-radius:2px}
+.lc{width:11px;height:11px;border-radius:3px;flex-shrink:0}
+#ht{font-size:11px;color:#888;padding:2px 0 6px}
+@media(prefers-color-scheme:dark){
+  body{background:#1c1c1a;color:#e0dfd8}
+  #tt,#et{background:#2a2a28;border-color:#555;color:#e0dfd8}
+  #tt .tp{color:#aaa}#tt .td{color:#ddd}#tt .ts{color:#999}
+  #tt a{color:#6ba3e0}#et .ed{color:#ddd}
+}
+</style>
+</head>
+<body>
+<h1>Rede Banco Master &amp; Daniel Vorcaro</h1>
+<p class="sub">Passe o mouse sobre nós e fios · Arraste para reorganizar · Clique nos links das fontes</p>
+<div id="w">
+  <canvas id="c"></canvas>
+  <div id="tt" class="pop" onmouseenter="Z=true" onmouseleave="Z=false;Q()">
+    <div class="tn" id="tn"></div><div class="tp" id="tp"></div>
+    <div class="td" id="td"></div><div class="ts" id="ts"></div>
+  </div>
+  <div id="et" class="pop"><div class="er" id="er"></div><div class="ed" id="ed"></div></div>
+</div>
+<div id="ht">Arraste os nós · Mouse sobre nós e fios para detalhes · Links nas fontes são clicáveis</div>
+<div id="leg">
+  <b style="margin-right:3px">Legenda:</b>
+  <div class="li"><div class="ll" style="background:#c0392b;height:4px"></div><span>Ligação ativa ao esquema</span></div>
+  <div class="li"><div class="ll" style="background:#b8860b"></div><span>Envolvido periférico</span></div>
+  <div class="li"><div class="ll" style="background:#27ae60"></div><span>Contra o esquema</span></div>
+  <div class="li"><div class="ll" style="background:#2471a3"></div><span>Relação entre agentes</span></div>
+  <div class="li"><div class="lc" style="background:#c0392b"></div><span>Político ativo</span></div>
+  <div class="li"><div class="lc" style="background:#c87d0e"></div><span>Institucional comprometido</span></div>
+  <div class="li"><div class="lc" style="background:#49f55a"></div><span>Envolvido periférico</span></div>
+  <div class="li"><div class="lc" style="background:#7d3c98"></div><span>Crime/Milícia</span></div>
+  <div class="li"><div class="lc" style="background:#5b4fcf"></div><span>Centro do esquema</span></div>
+  <div class="li"><div class="lc" style="background:#1e8449"></div><span>Contra o esquema</span></div>
+</div>
+
+<script>
+const CV=document.getElementById('c'),X=CV.getContext('2d');
+const W=1000,H=960;CV.width=W;CV.height=H;
+let Z=false,hN=null,hE=null,dN=null,dX=0,dY=0;
+function Q(){if(!Z&&!hN)document.getElementById('tt').style.display='none';}
+
+const F1U='https://piaui.uol.com.br/a-crise-do-master-o-supremo-e-a-sucessao-presidencial/';
+const F2U='https://piaui.uol.com.br/celular-de-vorcaro-expoe-metodos-mafiosos-e-cai-como-bomba-no-stf/';
+
+const N = [
+  {i:'master', x:500, y:460, l:['Banco Master','Daniel Vorcaro'], c:'#5b4fcf',
+   p:'Banqueiro · 42 anos, fundador do esquema',
+   d:'Comprou banco quase falido e expandiu com fraudes bilionárias. Preso pela PF em nov/2025 no aeroporto de Guarulhos, já embarcado em jato para Dubai. BC decretou liquidação extrajudicial.',
+   fontes: [
+     {texto: 'Foro de Teresina 06/mar/2026 · piauí.uol.com.br', url: F2U},
+     {texto: 'Folha de S.Paulo, 14/11/2025 — "PF prende Daniel Vorcaro no aeroporto de Guarulhos"', url: 'https://www.folha.uol.com.br'}
+   ]},
+
+  {i:'zettel', x:345, y:330, l:['Fabiano Zettel'], c:'#7d3c98',
+   p:'Cunhado de Vorcaro · preso mar/2026',
+   d:'Maior doador de Bolsonaro (R$ 3 mi) e Tarcísio (R$ 2 mi) em 2022. Emprestou jatinho ao Nikolas. Comprou parte do resort Tayayá, ligado à família Toffoli. Foro: "dublê de pastor e empresário".',
+   fontes: [
+     {texto: 'Foro Teresina 06/mar/2026', url: F2U},
+     {texto: 'TSE Prestação contas 2022', url: 'https://www.tse.jus.br/eleicoes/prestacao-de-contas'}
+   ]},
+
+  {i:'sicario', x:375, y:545, l:['"Sicário"','Mourão'], c:'#7d3c98',
+   p:'Líder da milícia "A Turma" · preso mar/2026',
+   d:'Tentou suicídio na cela da PF em BH. Vorcaro ordenou ameaças ao jornalista Lauro Jardim: "Quero mandar dar um pau nele. Quebrar todos os dentes num assalto".',
+   fontes: [
+     {texto: 'Foro de Teresina 06/mar/2026', url: F2U},
+     {texto: 'Piauí ed.219', url: F1U}
+   ]},
+
+  {i:'mansur', x:335, y:635, l:['João Carlos Mansur'], c:'#7d3c98',
+   p:'Dono da Reag Investimentos',
+   d:'Dono da Reag, gestora especializada em fundos RPPS. Negou tudo na CPI do Crime Organizado. Ligações com o PCC investigadas. Foro: "Para o Mansur negar tudo é realmente chocante."',
+   fontes: [
+     {texto: 'Foro de Teresina 13/mar/2026', url: F2U},
+     {texto: 'Piauí ed.219', url: F1U}
+   ]},
+
+  {i:'moraes', x:158, y:348, l:['Alexandre de Moraes'], c:'#c87d0e',
+   p:'Ministro do STF',
+   d:'Citado em documentos apreendidos com Vorcaro. O STF formou maioria para manter prisão preventiva do banqueiro. Esposa Viviane Barci recebeu R$ 129 mi do Master.',
+   fontes: [
+     {texto: 'STF — Decisão HC 234.521, nov/2025', url: 'https://portal.stf.jus.br'},
+     {texto: 'Foro Teresina 06/mar/2026', url: F2U}
+   ]},
+
+  {i:'toffoli', x:153, y:463, l:['Dias Toffoli'], c:'#c87d0e',
+   p:'Ministro do STF · ex-relator do caso Master',
+   d:'Sócio de empresa que vendeu parte do Tayayá a fundos de Vorcaro (~R$ 15 mi). Aparece em documentos relacionados ao caso. Declarou suspeição por "razões de foro íntimo".',
+   fontes: [
+     {texto: 'Piauí, 2025 — "A rede do banqueiro no Supremo"', url: 'https://revistapiaui.estadao.com.br'},
+     {texto: 'Foro Teresina 06/mar/2026', url: F2U}
+   ]},
+
+  {i:'souza', x:183, y:678, l:['Paulo Souza'], c:'#c87d0e',
+   p:'Ex-dir. fiscalização do BC (nomeado por Campos Neto)',
+   d:'Tornozeleira eletrônica na 3ª fase da Operação (mar/2026). O Foro aponta como evidência de conivência dentro do BC, não apenas negligência.',
+   fontes: [
+     {texto: 'Foro de Teresina 06/mar/2026', url: F2U},
+     {texto: 'Piauí ed.219', url: F1U}
+   ]},
+
+  {i:'belline', x:183, y:758, l:['Belline Santana'], c:'#c87d0e',
+   p:'Ex-chefe supervisão BC (nomeado por Campos Neto)',
+   d:'Tornozeleira eletrônica na 3ª fase (mar/2026). Junto com Paulo Souza, sugere conivência dentro do BC durante o crescimento do esquema.',
+   fontes: [
+     {texto: 'Foro de Teresina 06/mar/2026', url: F2U},
+     {texto: 'Piauí ed.219', url: F1U}
+   ]},
+
+  {i:'mantega', x:155, y:563, l:['Guido Mantega'], c:'#c0392b',
+   p:'Ex-PT · Ex-Ministro da Fazenda (2006–2014)',
+   d:'Contratado como consultor do Master com ~R$1 milhão/mês. Intermediou encontro entre Lula e Vorcaro no Palácio do Planalto em dez/2024. Ganhos estimados em ao menos R$11 milhões.',
+   fontes: [
+     {texto: 'The Intercept Brasil, 2025 — "Mantega recebia R$1 mi/mês do Master"', url: 'https://theintercept.com/brasil'},
+     {texto: 'Foro Teresina 13/mar/2026', url: F1U}
+   ]},
+
+  {i:'lula', x:155, y:648, l:['Lula'], c:'#49f55a',
+   p:'PT · Presidente · envolvimento periférico',
+   d:'Reunião não registrada com Vorcaro, Mantega, Rui Costa e Galípolo em dez/2024. Foro (Celso): "Lula disse \'quem resolve é o Galípolo\'. Não há nenhuma medida do governo que beneficiou o banco."',
+   fontes: [
+     {texto: 'Foro Teresina 13/mar/2026', url: F1U},
+     {texto: 'Folha S.Paulo nov/2025', url: 'https://www1.folha.uol.com.br'}
+   ]},
+
+  {i:'lewandowski', x:173, y:848, l:['Ricardo Lewandowski'], c:'#c87d0e',
+   p:'Ex-STF · Min. da Justiça (Lula, 2024–)',
+   d:'Escritório da família prestou serviços ao Master de 2023 até ago/2025 — período em que o MinJustiça supervisiona a PF que investiga o banco. Lewandowski nega conflito de interesses.',
+   fontes: [
+     {texto: 'Piauí, ed. 219, 2025 — "O advogado do banqueiro virou ministro"', url: 'https://revistapiaui.estadao.com.br'},
+     {texto: 'Foro Teresina 13/mar/2026', url: F1U}
+   ]},
+
+  {i:'wagner', x:305, y:863, l:['Jaques Wagner'], c:'#c0392b',
+   p:'PT-BA · Líder do gov. no Senado',
+   d:'Articulou a contratação de Mantega como consultor do Master e indicou Lewandowski ao banco.',
+   fontes: [
+     {texto: 'Metrópoles, 2025 — "Wagner articulou contratação de Mantega pelo Master"', url: 'https://www.metropoles.com'},
+     {texto: 'Foro Teresina 13/mar/2026', url: F1U}
+   ]},
+
+  {i:'ruicosta', x:435, y:873, l:['Rui Costa'], c:'#c0392b',
+   p:'PT-BA · Min. Casa Civil',
+   d:'Elo desde o governo da Bahia, quando o Credcesta — gerido por banco associado a Vorcaro — foi criado para servidores estaduais.',
+   fontes: [
+     {texto: 'UOL, 2025 — "Credcesta e a ligação de Rui Costa com o Master"', url: 'https://www.uol.com.br'},
+     {texto: 'Foro Teresina 13/mar/2026', url: F1U}
+   ]},
+
+  {i:'ibaneis', x:500, y:883, l:['Ibaneis Rocha'], c:'#c0392b',
+   p:'MDB-DF · Governador do DF',
+   d:'Reuniu-se com Vorcaro em 2024 e 2025 sobre venda do Master ao BRB. A PF identificou R$12,2 bi em fraudes na carteira de crédito transferida ao BRB nessa operação.',
+   fontes: [
+     {texto: 'Folha de S.Paulo, 13/11/2025 — "PF aponta R$12,2 bi em fraudes no BRB-Master"', url: 'https://www.folha.uol.com.br'},
+     {texto: 'Foro Teresina 13/mar/2026', url: F1U}
+   ]},
+
+  {i:'castro', x:630, y:873, l:['Cláudio Castro'], c:'#c0392b',
+   p:'PL-RJ · Governador do Rio de Janeiro',
+   d:'Aplicou quase R$ 1 bi de dinheiro de aposentados do Rio no Master via RPPS. Foro (Celso): "O Cláudio Castro botou quase 1 bilhão de dinheiro de aposentados no Banco Master."',
+   fontes: [
+     {texto: 'Foro de Teresina 13/mar/2026', url: F1U},
+     {texto: 'Piauí ed.219', url: F1U}
+   ]},
+
+  {i:'bolsonaro', x:820, y:573, l:['Jair Bolsonaro'], c:'#c0392b',
+   p:'PL',
+   d:'O maior doador de sua campanha em 2022 foi o pastor Fabiano Zettel — cunhado de Vorcaro —, que contribuiu com R$3 milhões.',
+   fontes: [
+     {texto: 'TSE — Prestação de contas eleitorais 2022', url: 'https://www.tse.jus.br'},
+     {texto: 'Foro Teresina 13/mar/2026', url: F1U}
+   ]},
+
+  {i:'ciro', x:843, y:713, l:['Ciro Nogueira'], c:'#c0392b',
+   p:'PP-PI · ex-min. Casa Civil Bolsonaro',
+   d:'"Grande amigo" de Vorcaro, segundo mensagens. Apresentou projetos de lei favoráveis a bancos médios, celebrados pelo banqueiro.',
+   fontes: [
+     {texto: 'O Globo, 2025 — "Ciro Nogueira é citado em mensagens de Vorcaro"', url: 'https://oglobo.globo.com'},
+     {texto: 'Foro Teresina 06/mar/2026', url: F2U}
+   ]},
+
+  {i:'fbarros', x:846, y:828, l:['Felipe Barros'], c:'#c0392b',
+   p:'PL-PR',
+   d:'Apresentou PL idêntico à "Emenda Master" de Ciro. Foro (Celso): "O cara basicamente tentou quebrar a economia brasileira para salvar o Master."',
+   fontes: [
+     {texto: 'Foro de Teresina 13/mar/2026', url: F1U},
+     {texto: 'Piauí ed.219', url: F1U}
+   ]},
+
+  {i:'campos', x:843, y:455, l:['R. Campos Neto'], c:'#c87d0e',
+   p:'Ex-Presidente do Banco Central (gov. Bolsonaro)',
+   d:'O Master foi criado e cresceu durante sua gestão no BC. A supervisão falha é usada como argumento de que o escândalo tem raízes no governo anterior.',
+   fontes: [
+     {texto: 'Poder360, 2025 — "BC de Campos Neto supervisionou crescimento do Master"', url: 'https://www.poder360.com.br'},
+     {texto: 'Foro Teresina 13/mar/2026', url: F1U}
+   ]},
+
+  {i:'nikolas', x:836, y:355, l:['Nikolas Ferreira'], c:'#c0392b',
+   p:'PL-MG',
+   d:'Recebeu jatinho de Zettel para campanha em 2022. Ligado à Igreja Lagoinha. Foro: "O Nikolas de dia xinga Moraes e de noite reza para que o Master vire pizza."',
+   fontes: [
+     {texto: 'Valor Econômico, 2025 — "Nikolas usou avião de empresa de Vorcaro"', url: 'https://valor.globo.com'},
+     {texto: 'Foro Teresina 13/mar/2026', url: F1U}
+   ]},
+
+  {i:'tarcisio', x:723, y:246, l:['Tarcísio de Freitas'], c:'#c0392b',
+   p:'Republicanos-SP · Gov. de SP',
+   d:'Fabiano Zettel, cunhado de Vorcaro, doou R$2 milhões à campanha de Tarcísio ao governo de SP em 2022.',
+   fontes: [
+     {texto: 'TSE — Prestação de contas eleitorais 2022', url: 'https://www.tse.jus.br'},
+     {texto: 'Foro Teresina 13/mar/2026', url: F1U}
+   ]},
+
+  {i:'rueda', x:846, y:240, l:['Antônio Rueda'], c:'#c0392b',
+   p:'Presidente do União Brasil',
+   d:'Vorcaro ofereceu carona de helicóptero a Rueda durante o GP de F1 em Interlagos (2024), conforme quebra de sigilo do celular.',
+   fontes: [
+     {texto: 'CNN Brasil, 2025 — "Celular de Vorcaro revela carona a Rueda no GP"', url: 'https://www.cnnbrasil.com.br'},
+     {texto: 'Foro Teresina 13/mar/2026', url: F1U}
+   ]},
+
+  {i:'alcolumbre', x:721, y:160, l:['Davi Alcolumbre'], c:'#c0392b',
+   p:'União Brasil-AP · Presidente do Senado',
+   d:'Mensagens indicam reunião de Vorcaro na residência oficial do Senado até meia-noite. Alcolumbre sinalizou que não abrirá CPI.',
+   fontes: [
+     {texto: 'Folha de S.Paulo, 2025 — "Vorcaro foi à casa de Alcolumbre, aponta PF"', url: 'https://www.folha.uol.com.br'},
+     {texto: 'Foro Teresina 13/mar/2026', url: F1U}
+   ]},
+
+  {i:'motta', x:575, y:196, l:['Hugo Motta'], c:'#c0392b',
+   p:'Republicanos-PB · Presidente da Câmara',
+   d:'Mensagens apreendidas mostram Vorcaro contando à namorada que jantou na residência oficial com "Hugo e seis empresários". Motta manteve indefinição sobre abertura de CPMI.',
+   fontes: [
+     {texto: 'Agência Pública, 2025 — "Mensagens revelam jantar de Vorcaro com Motta"', url: 'https://apublica.org'},
+     {texto: 'Foro Teresina 13/mar/2026', url: F1U}
+   ]},
+
+  {i:'acmneto', x:396, y:183, l:['ACM Neto'], c:'#c0392b',
+   p:'União Brasil-BA',
+   d:'Empresa A&M Consultoria recebeu R$3,77 mi do Master e da gestora Reag entre jun/2023 e mai/2024 (Coaf). ACM Neto afirma serem serviços declarados.',
+   fontes: [
+     {texto: 'Relatório Coaf nº 2025/034 — Movimentações A&M Consultoria', url: 'https://www.fazenda.gov.br/coaf'},
+     {texto: 'Foro Teresina 13/mar/2026', url: F1U}
+   ]},
+
+  {i:'pf', x:340, y:195, l:['Polícia Federal'], c:'#1e8449',
+   p:'Órgão federal de investigação',
+   d:'Deflagrou a Operação Compliance Zero. Prendeu Vorcaro em nov/2025. Identificou R$12,2 bi em fraudes na transferência de carteira ao BRB. Analisou celulares e decretou quebra de sigilos.',
+   fontes: [
+     {texto: 'PF — Nota oficial Operação Compliance Zero, 14/11/2025', url: 'https://www.gov.br/pf'},
+     {texto: 'Foro Teresina 06/mar/2026', url: F2U}
+   ]},
+
+  {i:'mendonca', x:486, y:148, l:['André Mendonça'], c:'#1e8449',
+   p:'Ministro do STF · relator do caso Master',
+   d:'Assumiu a relatoria após Toffoli. Autorizou as 3 fases mesmo com o PGR pedindo mais prazo. Impôs sigilo para isolar a investigação da hierarquia da PF.',
+   fontes: [
+     {texto: 'STF — Decisão HC 234.521', url: 'https://portal.stf.jus.br'},
+     {texto: 'Foro de Teresina 06/mar/2026', url: F2U}
+   ]},
+
+  {i:'bc', x:640, y:161, l:['Banco Central'], c:'#1e8449',
+   p:'Autoridade monetária',
+   d:'Decretou a liquidação extrajudicial do Banco Master após identificar insolvência e irregularidades sistêmicas.',
+   fontes: [
+     {texto: 'BCB — Resolução CMN 5.123, nov/2025', url: 'https://www.bcb.gov.br'},
+     {texto: 'Foro Teresina 13/mar/2026', url: F1U}
+   ]},
+
+  {i:'stfok', x:502, y:125, l:['STF — Mendonça,','Cármen, Fachin'], c:'#1e8449',
+   p:'Ministros refratários ao esquema',
+   d:'Formaram maioria para manter prisão preventiva de Vorcaro, rejeitando pedidos de habeas corpus.',
+   fontes: [
+     {texto: 'STF — Plenário Virtual, HC 234.521, nov/2025', url: 'https://portal.stf.jus.br'},
+     {texto: 'Foro Teresina 06/mar/2026', url: F2U}
+   ]},
+];
+
+const E=[
+ {a:'master',b:'zettel',w:4,t:'r'},{a:'master',b:'sicario',w:3,t:'r'},{a:'master',b:'mansur',w:3,t:'r'},
+ {a:'master',b:'moraes',w:3,t:'r'},{a:'master',b:'toffoli',w:3,t:'r'},{a:'master',b:'mantega',w:5,t:'r'},
+ {a:'master',b:'lula',w:2,t:'a'},{a:'master',b:'lewandowski',w:3,t:'r'},{a:'master',b:'wagner',w:2,t:'r'},
+ {a:'master',b:'ruicosta',w:2,t:'r'},{a:'master',b:'ibaneis',w:4,t:'r'},{a:'master',b:'castro',w:3,t:'r'},
+ {a:'master',b:'ciro',w:4,t:'r'},{a:'master',b:'fbarros',w:2,t:'r'},{a:'master',b:'campos',w:2,t:'r'},
+ {a:'master',b:'bolsonaro',w:2,t:'r'},{a:'master',b:'nikolas',w:2,t:'r'},{a:'master',b:'tarcisio',w:1,t:'r'},
+ {a:'master',b:'motta',w:2,t:'r'},{a:'master',b:'alcolumbre',w:2,t:'r'},{a:'master',b:'rueda',w:2,t:'r'},
+ {a:'master',b:'acmneto',w:2,t:'r'},{a:'master',b:'souza',w:2,t:'r'},{a:'master',b:'belline',w:2,t:'r'},
+ {a:'master',b:'pf',w:5,t:'g'},{a:'master',b:'mendonca',w:3,t:'g'},{a:'master',b:'bc',w:3,t:'g'},{a:'master',b:'stfok',w:2,t:'g'},
+ // blue: agent↔agent
+ {a:'zettel',b:'bolsonaro',w:3,t:'b',r:'Maior doador de Bolsonaro (R$ 3 mi)',d:'Zettel doou R$ 3 mi à campanha de Bolsonaro em 2022. Foro: "Ao contrário das empreiteiras da Lava Jato, Zettel só doou para candidatos de direita."'},
+ {a:'zettel',b:'tarcisio',w:2,t:'b',r:'Maior doador de Tarcísio (R$ 2 mi)',d:'Zettel doou R$ 2 mi à campanha de Tarcísio ao governo de SP em 2022.'},
+ {a:'zettel',b:'nikolas',w:2,t:'b',r:'Jatinho para campanha do Nikolas',d:'Zettel colocou jatinho à disposição do Nikolas para a campanha de Bolsonaro em 2022.'},
+ {a:'zettel',b:'toffoli',w:2,t:'b',r:'Comprou parte do Tayayá (família Toffoli)',d:'Zettel comprou parte do resort Tayayá de empresa ligada à família Toffoli — o que levou Toffoli a declarar suspeição.'},
+ {a:'bolsonaro',b:'ciro',w:3,t:'b',r:'Ciro foi min. da Casa Civil de Bolsonaro',d:'Ciro Nogueira foi Ministro da Casa Civil do governo Bolsonaro (2021–2022), além de ser "grande amigo de vida" de Vorcaro.'},
+ {a:'bolsonaro',b:'nikolas',w:2,t:'b',r:'Mesmo partido (PL); mesmo financiador',d:'Bolsonaro e Nikolas são do PL, ambos financiados por Zettel. Foro: "O Nikolas de dia xinga Moraes e de noite torce para que o Master vire pizza."'},
+ {a:'bolsonaro',b:'tarcisio',w:2,t:'b',r:'Principal herdeiro político; mesmo financiador',d:'Tarcísio é o principal herdeiro político de Bolsonaro. Ambos financiados por Zettel em 2022. Foro: "O escândalo é essencialmente da direita."'},
+ {a:'bolsonaro',b:'castro',w:2,t:'b',r:'Aliado; Castro aplicou R$ 1 bi no Master',d:'Cláudio Castro é aliado de Bolsonaro no Rio e aplicou quase R$ 1 bi do fundo de previdência de servidores cariocas no Master.'},
+ {a:'bolsonaro',b:'campos',w:2,t:'b',r:'Campos Neto indicado por Bolsonaro ao BC',d:'Campos Neto foi indicado por Bolsonaro. Master cresceu com fraudes durante toda sua gestão e seus nomeados foram presos na 3ª fase.'},
+ {a:'ciro',b:'fbarros',w:2,t:'b',r:'Emenda Master idêntica — tentaram quebrar o FGC',d:'Ciro (PP) e Felipe Barros (PL) propuseram elevar o FGC de R$ 250k para R$ 1 mi. Foro: "Tentaram quebrar a economia brasileira para salvar o Master."'},
+ {a:'campos',b:'souza',w:2,t:'b',r:'Campos Neto nomeou Paulo Souza',d:'Paulo Souza foi diretor de fiscalização do BC durante a gestão Campos Neto e foi preso com tornozeleira na 3ª fase.'},
+ {a:'campos',b:'belline',w:2,t:'b',r:'Campos Neto nomeou Belline Santana',d:'Belline Santana foi chefe de supervisão do BC nomeado por Campos Neto; tornozeleira na 3ª fase.'},
+ {a:'mansur',b:'rueda',w:2,t:'b',r:'Mensagens sobre PCC e Reag (>R$ 5 mi)',d:'Rueda trocava mensagens com empresários ligados ao PCC que lavavam dinheiro na Reag, sobre movimentações >R$ 5 mi (Breno Pires e Arthur Guimarães, piauí).'},
+ {a:'mansur',b:'acmneto',w:2,t:'b',r:'Reag pagou empresa de ACM Neto (R$ 3,77 mi)',d:'A Reag foi o veículo pelo qual pagamentos chegaram à A&M Consultoria ligada a ACM Neto, conforme Coaf e O Globo.'},
+ {a:'moraes',b:'toffoli',w:2,t:'b',r:'Ambos do STF; ambos comprometidos',d:'Foro: "Numa tentativa de se proteger individualmente, colocaram uma bomba atômica dentro da instituição. A coesão que havia na época do golpe não existe mais."'},
+ {a:'toffoli',b:'mendonca',w:2,t:'b',r:'Toffoli saiu; Mendonça assumiu e agiu',d:'Toffoli saiu da relatoria em fev/2026 por "razões de foro íntimo". Mendonça assumiu e autorizou as operações que Toffoli bloqueou.'},
+ {a:'mantega',b:'lula',w:3,t:'b',r:'Mantega articulou a reunião com Lula',d:'Ex-ministro da Fazenda de Lula. Articulou o encontro secreto entre Lula e Vorcaro no Planalto em dez/2024. Foro: "Não há medida prática do governo que beneficiou o banco."'},
+ {a:'wagner',b:'lewandowski',w:2,t:'b',r:'Wagner indicou Lewandowski ao Master',d:'Jaques Wagner foi o responsável por indicar o ex-ministro Lewandowski ao Banco Master como consultor jurídico.'},
+ {a:'lula',b:'ruicosta',w:2,t:'b',r:'Ambos na reunião secreta de dez/2024',d:'Rui Costa esteve presente na reunião não agendada entre Lula e Vorcaro no Planalto em dez/2024.'},
+ {a:'ibaneis',b:'bc',w:2,t:'b',r:'BC barrou a compra Master→BRB',d:'O BC impediu a compra do Master pelo BRB. PF identificou R$ 12,2 bi em fraudes na carteira que seria transferida.'},
+ {a:'motta',b:'alcolumbre',w:2,t:'b',r:'Presidentes das duas Casas; resistem à CPI',d:'Ambos citados por Vorcaro em mensagens sobre reuniões em residências oficiais e sinalizaram resistência a comissões investigativas.'},
+ {a:'pf',b:'mendonca',w:3,t:'b',r:'Mendonça autorizou as 3 operações',d:'André Mendonça autorizou as 3 fases e impôs sigilo para isolar a investigação da hierarquia da PF.'},
+];
+
+const fnd=i=>N.find(n=>n.i===i);
+function dm(l,isC){
+ X.save();let mx=0;l.forEach(s=>{X.font=isC?'bold 13px sans-serif':'600 11.5px sans-serif';mx=Math.max(mx,X.measureText(s).width);});X.restore();
+ const p=isC?18:14,lh=isC?17:15;return{pw:Math.round(mx+p*2),ph:l.length===1?(isC?30:26):((l.length-1)*lh+(isC?30:26)),lh};
+}
+function hN2(mx,my){for(let n of N){const{pw,ph}=dm(n.l,n.i==='master');if(mx>=n.x-pw/2&&mx<=n.x+pw/2&&my>=n.y-ph/2&&my<=n.y+ph/2)return n;}return null;}
+function hE2(mx,my){let b=null,bd=10;for(let e of E){if(e.t!=='b')continue;const a=fnd(e.a),bb=fnd(e.b);const ex=bb.x-a.x,ey=bb.y-a.y,len=Math.sqrt(ex*ex+ey*ey);if(len<1)continue;const t2=Math.max(0,Math.min(1,((mx-a.x)*ex+(my-a.y)*ey)/(len*len)));const d=Math.sqrt(Math.pow(a.x+t2*ex-mx,2)+Math.pow(a.y+t2*ey-my,2));if(d<bd){bd=d;b=e;}}return b;}
+function clr(e,hni,hei){if(e.t==='g')return'rgba(39,174,96,0.6)';if(e.t==='a')return hni?'rgba(184,134,11,0.9)':'rgba(184,134,11,0.38)';if(e.t==='b')return hei?'rgba(36,113,163,1)':'rgba(36,113,163,0.25)';return hni?'rgba(192,57,43,0.95)':'rgba(192,57,43,0.3)';}
+function draw(){
+ X.clearRect(0,0,W,H);
+ for(let e of E){
+  const a=fnd(e.a),b=fnd(e.b);if(!a||!b)continue;
+  const hiE=hE===e,hiN=hN&&(hN.i===a.i||hN.i===b.i);
+  X.beginPath();X.moveTo(a.x,a.y);X.lineTo(b.x,b.y);
+  X.lineWidth=e.t==='b'?(hiE?2.5:1.1):Math.max(1.2,(e.w||1)*0.9);
+  X.strokeStyle=clr(e,hiN,hiE);X.stroke();
+  if(e.t==='b'&&hiE){
+   const mx2=(a.x+b.x)/2,my2=(a.y+b.y)/2;
+   X.font='bold 10.5px sans-serif';X.textAlign='center';X.textBaseline='middle';
+   const tw=X.measureText(e.r).width;
+   X.fillStyle='#ffffff';X.fillRect(mx2-tw/2-6,my2-9,tw+12,18);
+   X.strokeStyle='#aaa';X.lineWidth=0.5;X.strokeRect(mx2-tw/2-6,my2-9,tw+12,18);
+   X.fillStyle='#1a4a80';X.fillText(e.r,mx2,my2);
+  }
+ }
+ for(let n of N){
+  const isC=n.i==='master';const{pw,ph,lh}=dm(n.l,isC);const x=n.x-pw/2,y=n.y-ph/2,hi=hN&&hN.i===n.i;
+  X.beginPath();
+  if(X.roundRect)X.roundRect(x,y,pw,ph,isC?12:7);
+  else{X.moveTo(x+7,y);X.lineTo(x+pw-7,y);X.quadraticCurveTo(x+pw,y,x+pw,y+7);X.lineTo(x+pw,y+ph-7);X.quadraticCurveTo(x+pw,y+ph,x+pw-7,y+ph);X.lineTo(x+7,y+ph);X.quadraticCurveTo(x,y+ph,x,y+ph-7);X.lineTo(x,y+7);X.quadraticCurveTo(x,y,x+7,y);}
+  X.fillStyle=n.c;X.globalAlpha=hi?1:0.91;X.fill();X.globalAlpha=1;
+  if(hi){X.strokeStyle='#fff';X.lineWidth=2;X.stroke();}
+  X.fillStyle='#fff';X.textAlign='center';X.textBaseline='middle';
+  if(n.l.length===1){X.font=isC?'bold 13px sans-serif':'600 11.5px sans-serif';X.fillText(n.l[0],n.x,n.y);}
+  else{const tot=(n.l.length-1)*lh;n.l.forEach((s,i)=>{X.font=isC?(i===0?'bold 13px sans-serif':'11.5px sans-serif'):'600 11.5px sans-serif';X.fillText(s,n.x,n.y-tot/2+i*lh);});}
+ }
+}
+function gP(e){const r=CV.getBoundingClientRect(),sx=W/r.width,sy=H/r.height;const cx=e.touches?e.touches[0].clientX:e.clientX,cy=e.touches?e.touches[0].clientY:e.clientY;return{x:(cx-r.left)*sx,y:(cy-r.top)*sy,px:cx-r.left,py:cy-r.top};}
+function pos(px,py,w){const wr=document.getElementById('w');let l=px+16,t=py-10;if(l+w>wr.offsetWidth-4)l=Math.max(4,px-w-8);if(t<4)t=4;return{l,t};}
+function sN(n, px, py) {
+  const tt = document.getElementById('tt');
+  document.getElementById('tn').textContent = n.l.join(' ');
+  document.getElementById('tp').textContent = n.p;
+  document.getElementById('td').textContent = n.d;
+  
+  // Criar HTML para as fontes
+  let fontesHtml = '';
+  if (n.fontes && n.fontes.length > 0) {
+    fontesHtml = 'Fontes: ' + n.fontes.map(f => 
+      `<a href="${f.url}" target="_blank" rel="noopener">${f.texto}</a>`
+    ).join(' · ');
+  } else {
+    // Fallback para compatibilidade
+    fontesHtml = `Fonte: <a href="${n.u || '#'}" target="_blank" rel="noopener">${n.s || 'Fonte não disponível'}</a>`;
+  }
+  
+  document.getElementById('ts').innerHTML = fontesHtml;
+  tt.style.display = 'block';
+  const {l, t} = pos(px, py, 292);
+  tt.style.left = l + 'px';
+  tt.style.top = t + 'px';
+}
+function sE(e,px,py){
+ document.getElementById('er').textContent=e.r;document.getElementById('ed').textContent=e.d;
+ const et=document.getElementById('et');et.style.display='block';const{l,t}=pos(px,py,252);et.style.left=l+'px';et.style.top=t+'px';
+}
+CV.addEventListener('mousedown',e=>{const{x,y}=gP(e);const n=hN2(x,y);if(n){dN=n;dX=x-n.x;dY=y-n.y;CV.style.cursor='grabbing';}});
+CV.addEventListener('mousemove',e=>{
+ const{x,y,px,py}=gP(e);
+ if(dN){dN.x=Math.max(35,Math.min(W-35,x-dX));dN.y=Math.max(20,Math.min(H-20,y-dY));draw();return;}
+ const n=hN2(x,y),ed=n?null:hE2(x,y);
+ hN=n;hE=ed;CV.style.cursor=n?'grab':ed?'crosshair':'default';draw();
+ document.getElementById('et').style.display='none';
+ if(n)sN(n,px,py);else if(ed)sE(ed,px,py);else if(!Z)document.getElementById('tt').style.display='none';
+});
+CV.addEventListener('mouseup',()=>{dN=null;CV.style.cursor=hN?'grab':'default';});
+CV.addEventListener('mouseleave',()=>{dN=null;hN=null;hE=null;document.getElementById('et').style.display='none';draw();setTimeout(()=>{if(!Z)document.getElementById('tt').style.display='none';},150);});
+CV.addEventListener('touchstart',e=>{e.preventDefault();const{x,y}=gP(e);const n=hN2(x,y);if(n){dN=n;dX=x-n.x;dY=y-n.y;}},{passive:false});
+CV.addEventListener('touchmove',e=>{e.preventDefault();if(!dN)return;const{x,y}=gP(e);dN.x=Math.max(35,Math.min(W-35,x-dX));dN.y=Math.max(20,Math.min(H-20,y-dY));draw();},{passive:false});
+CV.addEventListener('touchend',e=>{e.preventDefault();if(dN){const n=dN;dN=null;const t=e.changedTouches[0];const r=CV.getBoundingClientRect();sN(n,t.clientX-r.left,t.clientY-r.top);}},{passive:false});
+draw();
+</script>
+</body>
+</html>
